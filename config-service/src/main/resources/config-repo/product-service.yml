@@ -1,0 +1,28 @@
+spring:
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5434}/product_db
+        username: postgres
+        password: 1234$
+    jpa:
+        show-sql: true
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                format_sql: true
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+    port: 8086
+#Đăng ký với eureka server
+eureka:
+    client:
+        register-with-eureka: true
+        fetch-registry: true
+        service-url:
+            defaultZone: ${EUREKA_SERVER_URL:http://221.121.0.75:8761/eureka/}
+    instance:
+        prefer-ip-address: true
+        ip-address: 221.121.0.75
+

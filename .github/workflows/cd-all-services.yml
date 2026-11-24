@@ -1,0 +1,55 @@
+name: CD - All Services (Full Stack - GHCR)
+
+on:
+  workflow_dispatch: # Triển khai toàn bộ cụm Microservices đồng thời từ GHCR
+
+jobs:
+  deploy-all:
+    name: Deploy Full Stack to VPS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploying All Services to VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            echo "=========================================================="
+            echo ">>> BẮT ĐẦU TRIỂN KHAI TOÀN BỘ HỆ THỐNG MICROSERVICES TRÊN VPS (GHCR)"
+            echo "=========================================================="
+
+            DEPLOY_PATH="${{ secrets.DEPLOY_PATH || 'deploy-microservices-1' }}"
+
+            if [ ! -d "$DEPLOY_PATH" ]; then
+              echo "[1/4] Thư mục $DEPLOY_PATH chưa tồn tại. Đang clone dự án..."
+              git clone https://github.com/${{ github.repository }}.git "$DEPLOY_PATH"
+            fi
+
+            cd "$DEPLOY_PATH"
+
+            echo "[2/4] Đồng bộ file compose và cấu hình mới nhất từ git..."
+            git fetch origin main || git fetch origin master
+            git reset --hard origin/main || git reset --hard origin/master
+
+            if [ -n "${{ secrets.GHCR_TOKEN }}" ]; then
+              echo "[Auth] Đăng nhập GHCR trên VPS..."
+              echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME || github.actor }}" --password-stdin
+            fi
+
+            echo "[3/4] Kéo toàn bộ images mới nhất từ GHCR..."
+            docker compose pull
+
+            echo "[4/4] Khởi chạy toàn bộ hệ thống Microservices (KHÔNG BUILD TRÊN VPS)..."
+            docker compose up -d --no-build
+
+#            echo "Dọn dẹp Docker images dangling..."
+#            docker image prune -f
+
+            echo "=========================================================="
+            echo ">>> TRẠNG THÁI TẤT CẢ CONTAINER SAU DEPLOY:"
+            echo "=========================================================="
+            docker compose ps
+            echo ">>> TOÀN BỘ HỆ THỐNG ĐÃ ĐƯỢC TRIỂN KHAI THÀNH CÔNG TỪ GHCR!"
