@@ -81,7 +81,7 @@ jobs:
       - name: Resolve Lowercase GHCR Image Name
         run: |
           OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          echo "IMAGE_NAME=ghcr.io/${OWNER_LC}/eureka-service" >> $GITHUB_ENV
+          echo "IMAGE_NAME=ghcr.io/${OWNER_LC}/jb260310-ss8-eureka-service" >> $GITHUB_ENV
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
