@@ -21,7 +21,7 @@ jobs:
             echo ">>> BẮT ĐẦU TRIỂN KHAI TOÀN BỘ HỆ THỐNG MICROSERVICES TRÊN VPS (GHCR)"
             echo "=========================================================="
 
-            DEPLOY_PATH="${{ secrets.DEPLOY_PATH || 'deploy-microservices-1' }}"
+            DEPLOY_PATH="${{ secrets.DEPLOY_PATH || 'deploy-microservices-2' }}"
 
             if [ ! -d "$DEPLOY_PATH" ]; then
               echo "[1/4] Thư mục $DEPLOY_PATH chưa tồn tại. Đang clone dự án..."

@@ -21,7 +21,7 @@ jobs:
             echo ">>> BẮT ĐẦU KHỞI TẠO TẦNG HẠ TẦNG (DATABASES & REDIS) TRÊN VPS"
             echo "=========================================================="
 
-            DEPLOY_PATH="${{ secrets.DEPLOY_PATH || 'deploy-microservices-1' }}"
+            DEPLOY_PATH="${{ secrets.DEPLOY_PATH || 'deploy-microservices-2' }}"
 
             if [ ! -d "$DEPLOY_PATH" ]; then
               echo "[1/3] Thư mục $DEPLOY_PATH chưa tồn tại. Đang clone dự án..."
